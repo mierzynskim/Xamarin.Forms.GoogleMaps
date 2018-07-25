@@ -20,6 +20,7 @@ namespace XFGoogleMapSample
             buttonGroundOverlays.Clicked += (_, e) => Navigation.PushAsync(new GroundOverlaysPage());
             buttonMapStyles.Clicked += (_, e) => Navigation.PushAsync(new MapStylePage());
             buttonPinIconsCaching.Clicked += (_, e) => Navigation.PushAsync(new MultiplePinsIconsCaching());
+            buttonClustering.Clicked += (_, e) => Navigation.PushAsync(new ClusterPage());
         }
     }
 }

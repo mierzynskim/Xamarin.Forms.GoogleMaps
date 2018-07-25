@@ -46,6 +46,9 @@
     </MtouchTlsProvider>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GoogleMapsUtils.iOS, Version=1.0.6295.21800, Culture=neutral, PublicKeyToken=null">
+      <HintPath>external\GoogleMapsUtils.iOS.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -67,11 +70,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClusteredMarker.cs" />
     <Compile Include="Extensions\CameraUpdateExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Factories\DefaultImageFactory.cs" />
     <Compile Include="Factories\IImageFactory.cs" />
     <Compile Include="Logics\CameraLogic.cs" />
+    <Compile Include="Logics\ClusterLogic.cs" />
     <Compile Include="PlatformConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FormsGoogleMaps.cs" />

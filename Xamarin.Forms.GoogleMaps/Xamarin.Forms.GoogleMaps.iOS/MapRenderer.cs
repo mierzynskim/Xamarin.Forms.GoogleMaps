@@ -39,6 +39,7 @@ namespace Xamarin.Forms.GoogleMaps.iOS
                 new PolygonLogic(),
                 new CircleLogic(),
                 new PinLogic(Config.ImageFactory, OnMarkerCreating, OnMarkerCreated, OnMarkerDeleting, OnMarkerDeleted),
+                new ClusterLogic(Config.ImageFactory, OnMarkerCreating, OnMarkerCreated, OnMarkerDeleting, OnMarkerDeleted), 
                 new TileLayerLogic(),
                 new GroundOverlayLogic(Config.ImageFactory)
             };
