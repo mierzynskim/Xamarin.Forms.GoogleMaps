@@ -26,6 +26,7 @@ namespace Xamarin.Forms.GoogleMaps.Android
         GoogleMap.IOnMyLocationButtonClickListener
     {
         readonly CameraLogic _cameraLogic;
+        readonly ClusterLogic _clusterLogic;
         readonly UiSettingsLogic _uiSettingsLogic = new UiSettingsLogic();
         readonly BaseLogic<GoogleMap>[] _logics;
 
@@ -41,9 +42,12 @@ namespace Xamarin.Forms.GoogleMaps.Android
                 new CircleLogic(),
                 new PinLogic(context, Config.BitmapDescriptorFactory, 
                     OnMarkerCreating, OnMarkerCreated, OnMarkerDeleting, OnMarkerDeleted),
+
                 new TileLayerLogic(),
                 new GroundOverlayLogic(Config.BitmapDescriptorFactory)
             };
+            _clusterLogic = new ClusterLogic(context, Config.BitmapDescriptorFactory,
+                OnMarkerCreating, (pin, marker) => {}, (pin, marker) => {}, (pin, marker) => {});
         }
 
         static Bundle s_bundle;
@@ -141,7 +145,7 @@ namespace Xamarin.Forms.GoogleMaps.Android
                 logic.ScaledDensity = _scaledDensity;
             }
 
-            OnMapReady(NativeMap, newMap);
+            OnMapReady(oldNativeMap, oldMap, NativeMap, newMap);
         }
 
         private void OnSnapshot(TakeSnapshotMessage snapshotMessage)
@@ -155,7 +159,7 @@ namespace Xamarin.Forms.GoogleMaps.Android
             }));
         }
 
-        protected void OnMapReady(GoogleMap nativeMap, Map map)
+        protected void OnMapReady(GoogleMap oldNativeMap, Map oldMap, GoogleMap nativeMap, Map map)
         {
             if (nativeMap != null)
             {
@@ -180,6 +184,15 @@ namespace Xamarin.Forms.GoogleMaps.Android
 
                 SetMapType();
                 SetPadding();
+            }
+            
+            _clusterLogic.Register(oldNativeMap, oldMap, NativeMap, map);
+            _clusterLogic.RestoreItems();
+            _clusterLogic.OnMapPropertyChanged(new PropertyChangedEventArgs(Map.SelectedPinProperty.PropertyName));
+
+            if (this.Map.PendingClusterRequest)
+            {
+                this._clusterLogic.HandleClusterRequest();
             }
 
             _ready = true;
@@ -513,6 +526,7 @@ namespace Xamarin.Forms.GoogleMaps.Android
         }
 
         bool _disposed;
+
         protected override void Dispose(bool disposing)
         {
             if (disposing && !_disposed)

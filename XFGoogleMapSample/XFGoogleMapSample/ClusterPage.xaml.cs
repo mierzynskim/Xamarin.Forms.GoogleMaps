@@ -30,6 +30,12 @@ namespace XFGoogleMapSample
 					Label = $"Item {i}",
 					Icon = BitmapDescriptorFactory.FromBundle("pin_red.png")
 				});
+				this.Map.Pins.Add(new Pin()
+				{
+					Position = new Position(lat, lng),
+					Label = $"Item {i}",
+					Icon = BitmapDescriptorFactory.FromBundle("pin_red.png")
+				});
 			}
 
 			//this.Map.ClusterOptions.SetRenderUsingImage(BitmapDescriptorFactory.FromBundle("image01.png"));

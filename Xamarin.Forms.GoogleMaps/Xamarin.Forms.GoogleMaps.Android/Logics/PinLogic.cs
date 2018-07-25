@@ -21,7 +21,7 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
         private volatile bool _withoutUpdateNative = false;
 
         private readonly Context _context;
-        private readonly IBitmapDescriptorFactory _bitmapDescriptorFactory;
+        protected readonly IBitmapDescriptorFactory _bitmapDescriptorFactory;
         private readonly Action<Pin, MarkerOptions> _onMarkerCreating;
         private readonly Action<Pin, Marker> _onMarkerCreated;
         private readonly Action<Pin, Marker> _onMarkerDeleting;
@@ -89,12 +89,12 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
                 .Flat(outerItem.Flat)
                 .SetAlpha(1f - outerItem.Transparency);
 
-            if (outerItem.Icon != null)
-            {
-                var factory = _bitmapDescriptorFactory ?? DefaultBitmapDescriptorFactory.Instance;
-                var nativeDescriptor = factory.ToNative(outerItem.Icon);
-                opts.SetIcon(nativeDescriptor);
-            }
+//            if (outerItem.Icon != null)
+//            {
+//                var factory = _bitmapDescriptorFactory ?? DefaultBitmapDescriptorFactory.Instance;
+//                var nativeDescriptor = factory.ToNative(outerItem.Icon);
+//                opts.SetIcon(nativeDescriptor);
+//            }
 
             _onMarkerCreating(outerItem, opts);
 
