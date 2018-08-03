@@ -28,21 +28,37 @@ namespace XFGoogleMapSample
 				{
 					Position = new Position(lat, lng),
 					Label = $"Item {i}",
-					Icon = BitmapDescriptorFactory.FromBundle("pin_red.png")
-				});
-				this.Map.Pins.Add(new Pin()
-				{
-					Position = new Position(lat, lng),
-					Label = $"Item {i}",
-					Icon = BitmapDescriptorFactory.FromBundle("pin_red.png")
+					Icon = BitmapDescriptorFactory.FromBundle("image01.png")
 				});
 			}
-
-			//this.Map.ClusterOptions.SetRenderUsingImage(BitmapDescriptorFactory.FromBundle("image01.png"));
+			
+			Map.PinClicked += MapOnPinClicked;
+			//Map.CameraIdled += MapOnCameraIdled;
+			Map.InfoWindowClicked += MapOnInfoWindowClicked;
+			Map.InfoWindowLongClicked += MapOnInfoWindowLongClicked;
 
 			this.Map.Cluster();
 		}
 
+		private async void MapOnPinClicked(object sender, PinClickedEventArgs e)
+		{
+			await DisplayAlert("Pin clicked", e.Pin?.Label, "Cancel");
+		}
+
+		private async void MapOnCameraIdled(object sender, CameraIdledEventArgs e)
+		{
+			await DisplayAlert("Camera idled", $"{e.Position.Target.Latitude} {e.Position.Target.Longitude}", "Cancel");
+		}
+		
+		private async void MapOnInfoWindowClicked(object sender, InfoWindowClickedEventArgs e)
+		{
+			await DisplayAlert("Info clicked", $"{e.Pin?.Position.Latitude} {e.Pin?.Position.Longitude}", "Cancel");
+		}
+		
+		private async void MapOnInfoWindowLongClicked(object sender, InfoWindowLongClickedEventArgs e)
+		{
+			await DisplayAlert("Info long clicked", $"{e.Pin?.Position.Latitude} {e.Pin?.Position.Longitude}", "Cancel");
+		}
 
 		private double GetRandomNumber(double minimum, double maximum)
 		{

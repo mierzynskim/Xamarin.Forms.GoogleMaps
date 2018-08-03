@@ -21,7 +21,6 @@ namespace Xamarin.Forms.GoogleMaps.Logics.iOS
 		protected override IList<Pin> GetItems(Map map) => map.ClusteredPins;
 
 		private GMUClusterManager _clusterManager;
-		private GMUClusterDelegateHandler _clusterDelegate;
 
 		private bool _onMarkerEvent;
 		private Pin _draggingPin;
@@ -56,7 +55,6 @@ namespace Xamarin.Forms.GoogleMaps.Logics.iOS
 			//----------------------------------------
 
 			/* Delegate */
-			this._clusterDelegate = new GMUClusterDelegateHandler(this);
 
 			/* Algorithm */
 			IGMUClusterAlgorithm algorithm;
@@ -75,12 +73,10 @@ namespace Xamarin.Forms.GoogleMaps.Logics.iOS
 
 			/* Renderer */
 			var clusterRenderer = new GMUClusterRendererHandler(newNativeMap, iconGenerator);
-			clusterRenderer.WeakDelegate = this._clusterDelegate;
 
 			/* The actual manager */
 			this._clusterManager = new GMUClusterManager(newNativeMap, algorithm, clusterRenderer);
 
-			this._clusterManager.SetDelegate(this._clusterDelegate, this._clusterDelegate);
 
 			/* Handle the cluster request by forwarding it to clusterManager.Cluster() */
 			this.Map.OnCluster = HandleClusterRequest;
@@ -91,7 +87,7 @@ namespace Xamarin.Forms.GoogleMaps.Logics.iOS
 			if (newNativeMap != null)
 			{
 					newNativeMap.InfoTapped += OnInfoTapped;
-					//newNativeMap.InfoLongPressed += OnInfoLongPressed;
+					newNativeMap.InfoLongPressed += OnInfoLongPressed;
 					newNativeMap.TappedMarker = HandleGMSTappedMarker;
 					newNativeMap.InfoClosed += InfoWindowClosed;
 					newNativeMap.DraggingMarkerStarted += DraggingMarkerStarted;
@@ -145,10 +141,9 @@ namespace Xamarin.Forms.GoogleMaps.Logics.iOS
 			_onMarkerCreating(outerItem, nativeMarker);
 
 			outerItem.NativeObject = nativeMarker;
-			nativeMarker.Map = outerItem.IsVisible ? NativeMap : null;
+			//nativeMarker.Map = outerItem.IsVisible ? NativeMap : null;
 
 			// When using clustering, we don't set the pin directly.
-			//nativeMarker.Map = outerItem.IsVisible ? NativeMap : null;
 
 			this._clusterManager.AddItem(nativeMarker);
 
@@ -161,6 +156,8 @@ namespace Xamarin.Forms.GoogleMaps.Logics.iOS
 
 		protected override ClusteredMarker DeleteNativeItem(Pin outerItem)
 		{
+			if (outerItem?.NativeObject == null)
+				return null;
 			var nativeMarker = outerItem.NativeObject as ClusteredMarker;
 
 			_onMarkerDeleting(outerItem, nativeMarker);
@@ -217,6 +214,17 @@ namespace Xamarin.Forms.GoogleMaps.Logics.iOS
 			if (targetPin != null)
 			{
 				Map.SendInfoWindowClicked(targetPin);
+			}
+		}
+		
+		private void OnInfoLongPressed(object sender, GMSMarkerEventEventArgs e)
+		{
+			// lookup pin
+			var targetPin = LookupPin(e.Marker);
+            
+			if (targetPin != null)
+			{
+				Map.SendInfoWindowLongClicked(targetPin);
 			}
 		}
 
@@ -640,33 +648,5 @@ namespace Xamarin.Forms.GoogleMaps.Logics.iOS
 
 		#endregion
 
-		#region IGMUClusterManagerDelegate
-
-		internal class GMUClusterDelegateHandler : NSObject, IGMUClusterManagerDelegate, IGMUClusterRendererDelegate
-		{
-			private ClusterLogic _logic;
-
-			public GMUClusterDelegateHandler(ClusterLogic parent)
-			{
-				this._logic = parent;
-			}
-
-			[Export("renderer:willRenderMarker:")]
-			public void WillRenderMarker(GMUClusterRenderer renderer, Overlay marker)
-			{
-				if (marker is Marker) // We may get here markers too...
-				{
-					var myMarker = (Marker)marker;
-
-					if (myMarker.UserData is ClusteredMarker)
-					{
-						var item = (ClusteredMarker)myMarker.UserData;
-						myMarker.Title = item.Title;
-					}
-				}
-			}
-		}
-
-		#endregion
 	}
 }
