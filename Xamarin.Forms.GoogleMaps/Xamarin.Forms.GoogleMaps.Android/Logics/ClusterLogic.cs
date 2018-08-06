@@ -17,7 +17,7 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
 {
     internal class ClusterLogic : DefaultPinLogic<ClusteredMarker, GoogleMap>
     {
-        protected override IList<Pin> GetItems(Map map) => map.Pins;
+        protected override IList<Pin> GetItems(Map map) => map.ClusteredPins;
 
         private volatile bool _onMarkerEvent = false;
         private Pin _draggingPin;
@@ -136,7 +136,12 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
             _onMarkerCreating(outerItem, opts);
 
             var marker = new ClusteredMarker(outerItem);
-            this._clusterManager.AddItem(marker);
+            if (outerItem.Icon != null)
+            {
+                var factory = _bitmapDescriptorFactory ?? DefaultBitmapDescriptorFactory.Instance;
+                var nativeDescriptor = factory.ToNative(outerItem.Icon);
+                marker.Icon = nativeDescriptor;
+            }
             // If the pin has an IconView set this method will convert it into an icon for the marker
             if (outerItem?.Icon?.Type == BitmapDescriptorType.View)
             {
@@ -151,6 +156,7 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
             // associate pin with marker for later lookup in event handlers
             outerItem.NativeObject = marker;
             _onMarkerCreated(outerItem, marker);
+            this._clusterManager.AddItem(marker);
             return marker;
         }
 
@@ -172,7 +178,7 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
 
         public Pin LookupPin(ClusteredMarker marker)
         {
-            return GetItems(Map).FirstOrDefault(outerItem => ((Marker)outerItem.NativeObject).Id == marker.Id);
+            return GetItems(Map).FirstOrDefault(outerItem => ((ClusteredMarker)outerItem.NativeObject).Id == marker.Id);
         }
         
         public void HandleClusterRequest()

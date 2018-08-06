@@ -13,8 +13,7 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
 		ClusterManager.IOnClusterClickListener,
 		ClusterManager.IOnClusterItemClickListener,
 		ClusterManager.IOnClusterInfoWindowClickListener,
-		ClusterManager.IOnClusterItemInfoWindowClickListener,
-    GoogleMap.IOnInfoWindowClickListener
+		ClusterManager.IOnClusterItemInfoWindowClickListener
 	{
 		private Map _map;
 		private ClusterManager _clusterManager;
@@ -35,17 +34,16 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
 
 		public bool OnClusterItemClick(Java.Lang.Object nativeItemObj)
 		{
-			//var nativeItem = nativeItemObj as ClusteredMarker;
+			var targetPin = _logic.LookupPin(nativeItemObj as ClusteredMarker);
+           
+			targetPin?.SendTap();
 
-			// lookup pin
-			//var targetPin = this._logic.LookupPin(nativeItem);
-
-			//// If set to PinClickedEventArgs.Handled = true in app codes,
-			//// then all pin selection controlling by app.
-			//if (this._map.SendPinClicked(targetPin))
-			//{
-			//    return false;
-			//}
+			if (targetPin != null)
+			{
+				if (!ReferenceEquals(targetPin, _map.SelectedPin))
+					_map.SelectedPin = targetPin;
+				_map.SendPinClicked(targetPin);
+			}
 
 			return false;
 		}
@@ -55,9 +53,9 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
 
 		}
 
-		public void OnClusterItemInfoWindowClick(Java.Lang.Object p0)
+		public void OnClusterItemInfoWindowClick(Java.Lang.Object nativeItemObj)
 		{
-            var targetPin = _logic.LookupPin(p0 as ClusteredMarker);
+            var targetPin = _logic.LookupPin(nativeItemObj as ClusteredMarker);
            
             targetPin?.SendTap();
 
@@ -66,9 +64,5 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
                 _map.SendInfoWindowClicked(targetPin);
             }
 		}
-
-        public void OnInfoWindowClick(Marker marker)
-        {
-        }
     }
 }
