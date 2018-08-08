@@ -71,6 +71,10 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
 			{
 				this.Map.OnCluster = HandleClusterRequest;
 
+				this.NativeMap.SetOnCameraChangeListener(this._clusterManager);
+				this.NativeMap.SetOnMarkerClickListener(this._clusterManager);
+				this.NativeMap.SetOnInfoWindowClickListener(this._clusterManager);
+
 				this._clusterManager.SetRenderer(new XamarinClusterRenderer(this._context, this.Map, this.NativeMap, this._clusterManager));
 
 				this._clusterManager.SetOnClusterClickListener(this._clusterHandler);
@@ -84,6 +88,10 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
 		{
 			if (nativeMap != null)
 			{
+				this.NativeMap.SetOnCameraChangeListener(null);
+				this.NativeMap.SetOnMarkerClickListener(null);
+				this.NativeMap.SetOnInfoWindowClickListener(null);
+
 				this._clusterHandler.Dispose();
 				this._clusterManager.Dispose();
 			}
