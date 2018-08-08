@@ -51,20 +51,11 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
 
 		internal override void Register(GoogleMap oldNativeMap, Map oldMap, GoogleMap newNativeMap, Map newMap)
 		{
-			//----------------------------------------
-			//  Base registration
-			//----------------------------------------
 			base.Register(oldNativeMap, oldMap, newNativeMap, newMap);
 
-			//----------------------------------------
-			//  Instanciate a new cluster manager
-			//----------------------------------------
-
-			/* Initialize the manager */
 			this._clusterManager = new ClusterManager(Xamarin.Forms.Forms.Context, this.NativeMap);
 			this._clusterHandler = new ClusterLogicHandler(this.Map, this._clusterManager, this);
 
-			/* Choose the right algorithm */
 			switch (this.Map.ClusterOptions.Algorithm)
 			{
 				case ClusterAlgorithm.GridBased:
@@ -76,17 +67,9 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
 					break;
 			}
 
-			//----------------------------------------
-			//  Register
-			//----------------------------------------
 			if (newNativeMap != null)
 			{
-				/* Handle the cluster request by forwarding it to clusterManager.Cluster() */
 				this.Map.OnCluster = HandleClusterRequest;
-
-				this.NativeMap.SetOnCameraChangeListener(this._clusterManager);
-				this.NativeMap.SetOnMarkerClickListener(this._clusterManager);
-				this.NativeMap.SetOnInfoWindowClickListener(this._clusterManager);
 
 				this._clusterManager.SetRenderer(new XamarinClusterRenderer(this._context, this.Map, this.NativeMap, this._clusterManager));
 
@@ -101,10 +84,6 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
 		{
 			if (nativeMap != null)
 			{
-				this.NativeMap.SetOnCameraChangeListener(null);
-				this.NativeMap.SetOnMarkerClickListener(null);
-				this.NativeMap.SetOnInfoWindowClickListener(null);
-
 				this._clusterHandler.Dispose();
 				this._clusterManager.Dispose();
 			}
@@ -142,10 +121,9 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
                 var nativeDescriptor = factory.ToNative(outerItem.Icon);
                 marker.Icon = nativeDescriptor;
             }
-            // If the pin has an IconView set this method will convert it into an icon for the marker
             if (outerItem?.Icon?.Type == BitmapDescriptorType.View)
             {
-                marker.Visible = false; // Will become visible once the iconview is ready.
+                marker.Visible = false; 
                 TransformXamarinViewToAndroidBitmap(outerItem, marker);
             }
             else
@@ -153,7 +131,6 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
                 marker.Visible = outerItem.IsVisible;
             }
 
-            // associate pin with marker for later lookup in event handlers
             outerItem.NativeObject = marker;
             _onMarkerCreated(outerItem, marker);
             this._clusterManager.AddItem(marker);
@@ -207,7 +184,6 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
             }
             else
             {
-                // lookup pin
                 var targetPin = LookupPin(pin.NativeObject as ClusteredMarker);
                 (targetPin?.NativeObject as Marker)?.ShowInfoWindow();
             }
@@ -248,7 +224,6 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
         {
             if (outerItem.Icon != null && outerItem.Icon.Type == BitmapDescriptorType.View)
             {
-                // If the pin has an IconView set this method will convert it into an icon for the marker
                 TransformXamarinViewToAndroidBitmap(outerItem, nativeItem);
             }
             else

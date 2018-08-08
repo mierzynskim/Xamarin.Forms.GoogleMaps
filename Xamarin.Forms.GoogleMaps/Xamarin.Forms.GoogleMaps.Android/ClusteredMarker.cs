@@ -52,7 +52,6 @@ namespace Xamarin.Forms.GoogleMaps.Android
             AnchorY = (float)outerItem.Anchor.Y;
             Flat = outerItem.Flat;
             Alpha = 1f - outerItem.Transparency;
-
         }
     }
 }
