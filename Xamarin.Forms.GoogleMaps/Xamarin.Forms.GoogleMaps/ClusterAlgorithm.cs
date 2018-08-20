@@ -5,10 +5,11 @@
 	/// </summary>
 	public enum ClusterAlgorithm
 	{
-		// Conforts to GMUNonHierarchicalDistanceBasedAlgorithm
 		NonHierarchicalDistanceBased,
-
-		// Conforts to GMUGridBasedClusterAlgorithm
-		GridBased
+		GridBased,
+		/// <summary>
+		/// Android only
+		/// </summary>
+		VisibleNonHierarchicalDistanceBased
 	}
 }

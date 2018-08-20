@@ -8,7 +8,7 @@ namespace XFGoogleMapSample
 {
 	public partial class ClusterPage : ContentPage
 	{
-		private const int ClusterItemsCount = 50;// 10000;
+		private const int ClusterItemsCount = 10000;// 10000;
 		private const double Extent = 0.2;
 		private Position _currentPosition = new Position(31.768319, 35.213710);
 		private readonly Random _random = new Random();
@@ -17,7 +17,7 @@ namespace XFGoogleMapSample
 		{
 			InitializeComponent();
 
-			this.Map.MoveToRegion(MapSpan.FromCenterAndRadius(this._currentPosition, new Distance(100)));
+            this.Map.MoveToRegion(MapSpan.FromCenterAndRadius(this._currentPosition, Distance.FromMeters(100)));
 			
 			for (var i = 0; i <= ClusterItemsCount; i++)
 			{
@@ -31,6 +31,8 @@ namespace XFGoogleMapSample
 					Icon = BitmapDescriptorFactory.FromBundle("image01.png")
 				});
 			}
+
+			Map.ClusterOptions.Algorithm = ClusterAlgorithm.VisibleNonHierarchicalDistanceBased;
 			
 			Map.PinClicked += MapOnPinClicked;
 			//Map.CameraIdled += MapOnCameraIdled;

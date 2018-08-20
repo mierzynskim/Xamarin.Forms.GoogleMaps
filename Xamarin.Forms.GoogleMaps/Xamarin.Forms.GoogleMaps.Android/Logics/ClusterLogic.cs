@@ -8,6 +8,7 @@ using Xamarin.Forms.GoogleMaps.Android.Extensions;
 using Android.Widget;
 using System;
 using Android.Content;
+using Android.Util;
 using Com.Google.Maps.Android.Clustering;
 using Com.Google.Maps.Android.Clustering.Algo;
 using Xamarin.Forms.GoogleMaps.Android.Factories;
@@ -59,23 +60,29 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
 			switch (this.Map.ClusterOptions.Algorithm)
 			{
 				case ClusterAlgorithm.GridBased:
-					this._clusterManager.SetAlgorithm(new GridBasedAlgorithm());
+					this._clusterManager.Algorithm = new GridBasedAlgorithm();
+					break;
+				case ClusterAlgorithm.VisibleNonHierarchicalDistanceBased:
+				    this._clusterManager.Algorithm =
+				        new NonHierarchicalViewBasedAlgorithm(
+				            _context.Resources.DisplayMetrics.WidthPixels,
+				            _context.Resources.DisplayMetrics.HeightPixels);
 					break;
 				case ClusterAlgorithm.NonHierarchicalDistanceBased:
-				default:
-					this._clusterManager.SetAlgorithm(new NonHierarchicalDistanceBasedAlgorithm());
-					break;
+				    this._clusterManager.Algorithm =
+				        new NonHierarchicalDistanceBasedAlgorithm();
+				    break;
 			}
 
 			if (newNativeMap != null)
 			{
 				this.Map.OnCluster = HandleClusterRequest;
 
-				this.NativeMap.SetOnCameraChangeListener(this._clusterManager);
+				this.NativeMap.SetOnCameraIdleListener(this._clusterManager);
 				this.NativeMap.SetOnMarkerClickListener(this._clusterManager);
 				this.NativeMap.SetOnInfoWindowClickListener(this._clusterManager);
 
-				this._clusterManager.SetRenderer(new XamarinClusterRenderer(this._context, this.Map, this.NativeMap, this._clusterManager));
+				this._clusterManager.Renderer = new XamarinClusterRenderer(this._context, this.Map, this.NativeMap, this._clusterManager);
 
 				this._clusterManager.SetOnClusterClickListener(this._clusterHandler);
 				this._clusterManager.SetOnClusterInfoWindowClickListener(this._clusterHandler);
