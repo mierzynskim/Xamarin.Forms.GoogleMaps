@@ -163,6 +163,8 @@ namespace Xamarin.Forms.GoogleMaps.Logics.iOS
 			_onMarkerDeleting(outerItem, nativeMarker);
 
 			nativeMarker.Map = null;
+			
+			this._clusterManager.RemoveItem(nativeMarker);
 
 			if (ReferenceEquals(Map.SelectedPin, outerItem))
 				Map.SelectedPin = null;
