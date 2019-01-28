@@ -20,7 +20,8 @@
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
     <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
-    <AndroidTlsProvider></AndroidTlsProvider>
+    <AndroidTlsProvider>
+    </AndroidTlsProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -123,12 +124,6 @@
     <Reference Include="Xamarin.GooglePlayServices.Maps">
       <HintPath>..\packages\Xamarin.GooglePlayServices.Maps.60.1142.1\lib\MonoAndroid80\Xamarin.GooglePlayServices.Maps.dll</HintPath>
     </Reference>
-    <Reference Include="Xamarin.Forms.GoogleMaps.Android">
-      <HintPath>..\packages\Xamarin.Forms.GoogleMaps.3.0.4\lib\MonoAndroid70\Xamarin.Forms.GoogleMaps.Android.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Forms.GoogleMaps">
-      <HintPath>..\packages\Xamarin.Forms.GoogleMaps.3.0.4\lib\MonoAndroid70\Xamarin.Forms.GoogleMaps.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
@@ -159,6 +154,14 @@
     <AndroidAsset Include="Assets\image03.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Xamarin.Forms.GoogleMaps\Xamarin.Forms.GoogleMaps.Android\Xamarin.Forms.GoogleMaps.Android.csproj">
+      <Project>{d12eade4-1457-4126-8ea7-9bedf5393409}</Project>
+      <Name>Xamarin.Forms.GoogleMaps.Android</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Xamarin.Forms.GoogleMaps\Xamarin.Forms.GoogleMaps\Xamarin.Forms.GoogleMaps.csproj">
+      <Project>{d3afb17e-3834-4f7e-af8d-f8627ad7df25}</Project>
+      <Name>Xamarin.Forms.GoogleMaps</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XFGoogleMapSample\XFGoogleMapSample.csproj">
       <Project>{E5FEBCA7-6127-4002-B7B3-3EE4CC362B25}</Project>
       <Name>XFGoogleMapSample</Name>

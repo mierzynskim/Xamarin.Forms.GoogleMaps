@@ -160,7 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Xamarin.Forms.GoogleMaps.Android.Utils\Xamarin.Forms.GoogleMaps.Android.Utils.csproj">
-      <Project>{F38A2B58-0051-4E72-ADF9-9305AD4274A8}</Project>
+      <Project>{f38a2b58-0051-4e72-adf9-9305ad4274a8}</Project>
       <Name>Xamarin.Forms.GoogleMaps.Android.Utils</Name>
     </ProjectReference>
     <ProjectReference Include="..\Xamarin.Forms.GoogleMaps\Xamarin.Forms.GoogleMaps.csproj">
