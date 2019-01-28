@@ -3,13 +3,24 @@
 	<metadata minClientVersion="2.8.3">
 		<id>Xamarin.Forms.GoogleMaps</id>
 		<title>Xamarin.Forms.GoogleMaps</title>
-		<version>3.0.0-beta6</version>
+		<version>3.0.4</version>
 		<releaseNotes>
-# 3.0.0-beta6
+
+# 3.0.4
 
 ## New Features
 
-* #497 [Android/iOS]Support Caching BitmapDescriptors(Android) or UIImages(iOS)
+* #555 Add support .NET Standard 1.0 to nuget package
+
+## Bug Fixes
+
+* #559 [iOS]MoveToRegion fails when longitude greater than 90 or less than -90
+
+# 3.0.3
+
+## Bug Fixes
+
+* #413 [iOS]Fix resets camera when device rotating
 
 full release notes is here - https://github.com/amay077/Xamarin.Forms.GoogleMaps/blob/master/RELEASE_NOTES.md
 		</releaseNotes>
@@ -37,6 +48,7 @@ full release notes is here - https://github.com/amay077/Xamarin.Forms.GoogleMaps
 	</metadata>
 	<files>
 		<!--Core-->
+		<file src="Xamarin.Forms.GoogleMaps\bin\Release\netstandard1.0\Xamarin.Forms.GoogleMaps.dll" target="lib\netstandard1.0" />
 		<file src="Xamarin.Forms.GoogleMaps\bin\Release\netstandard2.0\Xamarin.Forms.GoogleMaps.dll" target="lib\netstandard2.0" />
 
     	<!--Xamarin.Android-->

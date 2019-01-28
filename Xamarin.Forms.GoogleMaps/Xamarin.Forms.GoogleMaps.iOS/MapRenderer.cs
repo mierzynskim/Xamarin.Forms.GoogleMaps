@@ -31,6 +31,8 @@ namespace Xamarin.Forms.GoogleMaps.iOS
 
         readonly BaseLogic<MapView>[] _logics;
 
+        private bool _ready = false;
+
         public MapRenderer()
         {
             _logics = new BaseLogic<MapView>[]
@@ -134,7 +136,8 @@ namespace Xamarin.Forms.GoogleMaps.iOS
                 _cameraLogic.Register(Map, NativeMap);
                 Map.OnSnapshot += OnSnapshot;
 
-                _cameraLogic.MoveCamera(mapModel.InitialCameraUpdate);
+                //_cameraLogic.MoveCamera(mapModel.InitialCameraUpdate);
+                //_ready = true;
 
                 _uiSettingsLogic.Register(Map, NativeMap);
                 UpdateMapType();
@@ -230,9 +233,10 @@ namespace Xamarin.Forms.GoogleMaps.iOS
                 return;
             }
 
-            if (_shouldUpdateRegion)
+            if (_shouldUpdateRegion && !_ready)
             {
                 _cameraLogic.MoveCamera(((Map)Element).InitialCameraUpdate);
+                _ready = true;
                 _shouldUpdateRegion = false;
             }
 
