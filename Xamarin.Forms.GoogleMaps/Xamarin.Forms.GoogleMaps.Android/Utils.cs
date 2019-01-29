@@ -14,7 +14,7 @@ using System.Collections.Concurrent;
 
 namespace Xamarin.Forms.GoogleMaps.Android
 {
-    class Utils
+    internal class Utils
     {
         /// <summary>
         /// convert from dp to pixels

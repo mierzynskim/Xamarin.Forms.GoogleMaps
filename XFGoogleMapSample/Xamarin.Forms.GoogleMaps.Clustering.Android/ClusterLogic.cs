@@ -1,24 +1,23 @@
-﻿using Android.Gms.Maps.Model;
+﻿using System;
 using System.Collections.Generic;
-using Android.Gms.Maps;
-using System.Linq;
 using System.ComponentModel;
-using Xamarin.Forms.GoogleMaps.Android;
-using Xamarin.Forms.GoogleMaps.Android.Extensions;
-using Android.Widget;
-using System;
+using System.Linq;
 using Android.Content;
-using Android.Util;
+using Android.Gms.Maps;
+using Android.Gms.Maps.Model;
+using Android.Widget;
 using Com.Google.Maps.Android.Clustering;
 using Com.Google.Maps.Android.Clustering.Algo;
+using Xamarin.Forms.GoogleMaps.Android;
 using Xamarin.Forms.GoogleMaps.Android.Factories;
-using Xamarin.Forms.GoogleMaps.Android.Logics.Cluster;
+using Xamarin.Forms.GoogleMaps.Clustering.Android.Cluster;
+using Xamarin.Forms.GoogleMaps.Logics;
 
-namespace Xamarin.Forms.GoogleMaps.Logics.Android
+namespace Xamarin.Forms.GoogleMaps.Clustering.Android
 {
     internal class ClusterLogic : DefaultPinLogic<ClusteredMarker, GoogleMap>
     {
-        protected override IList<Pin> GetItems(Map map) => map.ClusteredPins;
+        protected override IList<Pin> GetItems(Map map) => (map as ClusteredMap)?.ClusteredPins;
 
         private volatile bool _onMarkerEvent = false;
         private Pin _draggingPin;
@@ -33,6 +32,8 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
         private readonly Action<Pin, ClusteredMarker> _onMarkerCreated;
         private readonly Action<Pin, ClusteredMarker> _onMarkerDeleting;
         private readonly Action<Pin, ClusteredMarker> _onMarkerDeleted;
+
+        public ClusteredMap ClusteredMap => (ClusteredMap) Map;
 
         public ClusterLogic(
             Context context,
@@ -50,61 +51,64 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
             _onMarkerDeleted = onMarkerDeleted;
         }
 
-		internal override void Register(GoogleMap oldNativeMap, Map oldMap, GoogleMap newNativeMap, Map newMap)
-		{
-			base.Register(oldNativeMap, oldMap, newNativeMap, newMap);
+        internal override void Register(GoogleMap oldNativeMap, Map oldMap, GoogleMap newNativeMap, Map newMap)
+        {
+            base.Register(oldNativeMap, oldMap, newNativeMap, newMap);
 
-			this._clusterManager = new ClusterManager(Xamarin.Forms.Forms.Context, this.NativeMap);
-			this._clusterHandler = new ClusterLogicHandler(this.Map, this._clusterManager, this);
+            this._clusterManager = new ClusterManager(Xamarin.Forms.Forms.Context, this.NativeMap);
+            this._clusterHandler = new ClusterLogicHandler(this.Map, this._clusterManager, this);
 
-			switch (this.Map.ClusterOptions.Algorithm)
-			{
-				case ClusterAlgorithm.GridBased:
-					this._clusterManager.Algorithm = new GridBasedAlgorithm();
-					break;
-				case ClusterAlgorithm.VisibleNonHierarchicalDistanceBased:
-				    this._clusterManager.Algorithm =
-				        new NonHierarchicalViewBasedAlgorithm(
-				            _context.Resources.DisplayMetrics.WidthPixels,
-				            _context.Resources.DisplayMetrics.HeightPixels);
-					break;
-				case ClusterAlgorithm.NonHierarchicalDistanceBased:
-				    this._clusterManager.Algorithm =
-				        new NonHierarchicalDistanceBasedAlgorithm();
-				    break;
-			}
+            switch (this.ClusteredMap.ClusterOptions.Algorithm)
+            {
+                case ClusterAlgorithm.GridBased:
+                    this._clusterManager.Algorithm = new GridBasedAlgorithm();
+                    break;
+                case ClusterAlgorithm.VisibleNonHierarchicalDistanceBased:
+                    this._clusterManager.Algorithm =
+                        new NonHierarchicalViewBasedAlgorithm(
+                            _context.Resources.DisplayMetrics.WidthPixels,
+                            _context.Resources.DisplayMetrics.HeightPixels);
+                    break;
+                case ClusterAlgorithm.NonHierarchicalDistanceBased:
+                    this._clusterManager.Algorithm =
+                        new NonHierarchicalDistanceBasedAlgorithm();
+                    break;
+            }
 
-			if (newNativeMap != null)
-			{
-				this.Map.OnCluster = HandleClusterRequest;
+            if (newNativeMap != null)
+            {
+                this.ClusteredMap.OnCluster = HandleClusterRequest;
 
-				this.NativeMap.SetOnCameraIdleListener(this._clusterManager);
-				this.NativeMap.SetOnMarkerClickListener(this._clusterManager);
-				this.NativeMap.SetOnInfoWindowClickListener(this._clusterManager);
+                this.NativeMap.SetOnCameraIdleListener(this._clusterManager);
+                this.NativeMap.SetOnMarkerClickListener(this._clusterManager);
+                this.NativeMap.SetOnInfoWindowClickListener(this._clusterManager);
 
-				this._clusterManager.Renderer = new XamarinClusterRenderer(this._context, this.Map, this.NativeMap, this._clusterManager);
+                this._clusterManager.Renderer = new XamarinClusterRenderer(this._context,
+                    this.ClusteredMap,
+                    this.NativeMap,
+                this._clusterManager);
 
-				this._clusterManager.SetOnClusterClickListener(this._clusterHandler);
-				this._clusterManager.SetOnClusterInfoWindowClickListener(this._clusterHandler);
-				this._clusterManager.SetOnClusterItemClickListener(this._clusterHandler);
-				this._clusterManager.SetOnClusterItemInfoWindowClickListener(this._clusterHandler);
-			}
-		}
+                this._clusterManager.SetOnClusterClickListener(this._clusterHandler);
+                this._clusterManager.SetOnClusterInfoWindowClickListener(this._clusterHandler);
+                this._clusterManager.SetOnClusterItemClickListener(this._clusterHandler);
+                this._clusterManager.SetOnClusterItemInfoWindowClickListener(this._clusterHandler);
+            }
+        }
 
-		internal override void Unregister(GoogleMap nativeMap, Map map)
-		{
-			if (nativeMap != null)
-			{
-				this.NativeMap.SetOnCameraChangeListener(null);
-				this.NativeMap.SetOnMarkerClickListener(null);
-				this.NativeMap.SetOnInfoWindowClickListener(null);
+        internal override void Unregister(GoogleMap nativeMap, Map map)
+        {
+            if (nativeMap != null)
+            {
+                this.NativeMap.SetOnCameraChangeListener(null);
+                this.NativeMap.SetOnMarkerClickListener(null);
+                this.NativeMap.SetOnInfoWindowClickListener(null);
 
-				this._clusterHandler.Dispose();
-				this._clusterManager.Dispose();
-			}
+                this._clusterHandler.Dispose();
+                this._clusterManager.Dispose();
+            }
 
-			base.Unregister(nativeMap, map);
-		}
+            base.Unregister(nativeMap, map);
+        }
 
         protected override ClusteredMarker CreateNativeItem(Pin outerItem)
         {
@@ -318,4 +322,3 @@ namespace Xamarin.Forms.GoogleMaps.Logics.Android
         }
     }
 }
-

@@ -119,13 +119,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClusteredMarker.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Factories\IBitmapDescriptorFactory.cs" />
     <Compile Include="Logics\CameraLogic.cs" />
-    <Compile Include="Logics\ClusterLogic.cs" />
-    <Compile Include="Logics\Cluster\ClusterLogicHandler.cs" />
-    <Compile Include="Logics\Cluster\XamarinClusterRenderer.cs" />
     <Compile Include="Logics\DelegateSnapshotReadyCallback.cs" />
     <Compile Include="PlatformConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -159,10 +155,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Xamarin.Forms.GoogleMaps.Android.Utils\Xamarin.Forms.GoogleMaps.Android.Utils.csproj">
-      <Project>{f38a2b58-0051-4e72-adf9-9305ad4274a8}</Project>
-      <Name>Xamarin.Forms.GoogleMaps.Android.Utils</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Xamarin.Forms.GoogleMaps\Xamarin.Forms.GoogleMaps.csproj">
       <Project>{D3AFB17E-3834-4F7E-AF8D-F8627AD7DF25}</Project>
       <Name>Xamarin.Forms.GoogleMaps</Name>

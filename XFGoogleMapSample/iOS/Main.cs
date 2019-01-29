@@ -4,7 +4,11 @@ using System.Linq;
 
 using Foundation;
 using UIKit;
+using Xamarin.Forms;
+using Xamarin.Forms.GoogleMaps.Clustering;
+using Xamarin.Forms.GoogleMaps.Clustering.iOS;
 
+[assembly: ExportRenderer(typeof(ClusteredMap), typeof(ClusteredMapRenderer))]
 namespace XFGoogleMapSample.iOS
 {
     public class Application

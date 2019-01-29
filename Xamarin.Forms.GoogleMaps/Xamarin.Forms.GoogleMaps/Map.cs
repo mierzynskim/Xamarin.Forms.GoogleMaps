@@ -42,8 +42,6 @@ namespace Xamarin.Forms.GoogleMaps
                 ((Map)bindable)._useMoveToRegisonAsInitialBounds = false;   
             });
         
-        public static readonly BindableProperty ClusterOptionsProperty = BindableProperty.Create(nameof(ClusterOptionsProperty), typeof(ClusterOptions), typeof(Map), default(ClusterOptions));
-
         public static readonly BindableProperty PaddingProperty = BindableProperty.Create(nameof(PaddingProperty), typeof(Thickness), typeof(Map), default(Thickness));
 
         bool _useMoveToRegisonAsInitialBounds = true;
@@ -56,7 +54,6 @@ namespace Xamarin.Forms.GoogleMaps
         public static readonly BindableProperty MapStyleProperty = BindableProperty.Create(nameof(MapStyle), typeof(MapStyle), typeof(Map), null);
 
         readonly ObservableCollection<Pin> _pins = new ObservableCollection<Pin>();
-        readonly ObservableCollection<Pin> _clusteredPins = new ObservableCollection<Pin>();
         readonly ObservableCollection<Polyline> _polylines = new ObservableCollection<Polyline>();
         readonly ObservableCollection<Polygon> _polygons = new ObservableCollection<Polygon>();
         readonly ObservableCollection<Circle> _circles = new ObservableCollection<Circle>();
@@ -90,8 +87,7 @@ namespace Xamarin.Forms.GoogleMaps
 
         internal Action<TakeSnapshotMessage> OnSnapshot{ get; set; }
         
-        internal bool PendingClusterRequest { get; set; }
-        internal Action OnCluster { get; set; }
+
 
         MapSpan _visibleRegion;
         MapRegion _region;
@@ -106,7 +102,6 @@ namespace Xamarin.Forms.GoogleMaps
         public Map()
         {
             VerticalOptions = HorizontalOptions = LayoutOptions.FillAndExpand;
-            ClusterOptions = new ClusterOptions();
 
             _pins.CollectionChanged += PinsOnCollectionChanged;
             _polylines.CollectionChanged += PolylinesOnCollectionChanged;
@@ -198,21 +193,10 @@ namespace Xamarin.Forms.GoogleMaps
             get { return (MapStyle)GetValue(MapStyleProperty); }
             set { SetValue(MapStyleProperty, value); }
         }
-        
-        public ClusterOptions ClusterOptions
-        {
-            get { return (ClusterOptions)GetValue(ClusterOptionsProperty); }
-            set { SetValue(ClusterOptionsProperty, value); }
-        }
 
         public IList<Pin> Pins
         {
             get { return _pins; }
-        }
-        
-        public IList<Pin> ClusteredPins
-        {
-            get { return _clusteredPins; }
         }
 
         public IList<Polyline> Polylines
@@ -283,24 +267,6 @@ namespace Xamarin.Forms.GoogleMaps
             return _pins.GetEnumerator();
         }
         
-        public void Cluster()
-        {
-            this.SendCluster();
-        }
-        
-        private void SendCluster()
-        {
-            if (OnCluster != null)
-            {
-                OnCluster.Invoke();
-            }
-            else
-            {
-                PendingClusterRequest = true;
-            }
-        }
-
-
         public void MoveToRegion(MapSpan mapSpan, bool animate = true)
         {
             if (mapSpan == null)

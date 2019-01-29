@@ -26,7 +26,6 @@ namespace Xamarin.Forms.GoogleMaps.Android
         GoogleMap.IOnMyLocationButtonClickListener
     {
         readonly CameraLogic _cameraLogic;
-        readonly ClusterLogic _clusterLogic;
         readonly UiSettingsLogic _uiSettingsLogic = new UiSettingsLogic();
         readonly BaseLogic<GoogleMap>[] _logics;
 
@@ -42,18 +41,15 @@ namespace Xamarin.Forms.GoogleMaps.Android
                 new CircleLogic(),
                 new PinLogic(context, Config.BitmapDescriptorFactory, 
                     OnMarkerCreating, OnMarkerCreated, OnMarkerDeleting, OnMarkerDeleted),
-
                 new TileLayerLogic(),
                 new GroundOverlayLogic(Config.BitmapDescriptorFactory)
             };
-            _clusterLogic = new ClusterLogic(context, Config.BitmapDescriptorFactory,
-                OnMarkerCreating, (pin, marker) => {}, (pin, marker) => {}, (pin, marker) => {});
         }
 
         static Bundle s_bundle;
         internal static Bundle Bundle { set { s_bundle = value; } }
 
-        internal static PlatformConfig Config { private get; set; }
+        protected internal static PlatformConfig Config { get; set; }
 
         // ReSharper disable once MemberCanBePrivate.Global
         protected GoogleMap NativeMap { get; private set; }
@@ -161,6 +157,17 @@ namespace Xamarin.Forms.GoogleMaps.Android
 
         protected void OnMapReady(GoogleMap oldNativeMap, Map oldMap, GoogleMap nativeMap, Map map)
         {
+            UpdateMap(oldNativeMap, oldMap, nativeMap, map);
+
+            _ready = true;
+            if (_ready && _onLayout)
+            {
+                InitializeLogic();
+            }
+        }
+
+        protected internal virtual void UpdateMap(GoogleMap oldNativeMap, Map oldMap, GoogleMap nativeMap, Map map)
+        {
             if (nativeMap != null)
             {
                 _cameraLogic.Register(map, nativeMap);
@@ -184,21 +191,6 @@ namespace Xamarin.Forms.GoogleMaps.Android
 
                 SetMapType();
                 SetPadding();
-            }
-            
-            _clusterLogic.Register(oldNativeMap, oldMap, NativeMap, map);
-            _clusterLogic.RestoreItems();
-            _clusterLogic.OnMapPropertyChanged(new PropertyChangedEventArgs(Map.SelectedPinProperty.PropertyName));
-
-            if (this.Map.PendingClusterRequest)
-            {
-                this._clusterLogic.HandleClusterRequest();
-            }
-
-            _ready = true;
-            if (_ready && _onLayout)
-            {
-                InitializeLogic();
             }
         }
 

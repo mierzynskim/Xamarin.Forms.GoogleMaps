@@ -1,11 +1,10 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Android;
 using Android.App;
-using Xamarin.Forms;
 using Xamarin.Forms.Internals;
-using Xamarin.Forms.GoogleMaps;
-using Xamarin.Forms.GoogleMaps.Android;
+
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
@@ -17,7 +16,7 @@ using Xamarin.Forms.GoogleMaps.Android;
 [assembly: ComVisible(false)]
 
 // Add some common permissions, these can be removed if not needed
+[assembly: InternalsVisibleTo("Xamarin.Forms.GoogleMaps.Clustering.Android")]
 
 [assembly: UsesPermission(Manifest.Permission.Internet)]
-[assembly: ExportRenderer(typeof(Map), typeof(MapRenderer))]
 [assembly: Preserve]

@@ -3,8 +3,7 @@ using Android.Gms.Maps.Model;
 using Com.Google.Maps.Android.Clustering;
 using NativeBitmapDescriptor = Android.Gms.Maps.Model.BitmapDescriptor;
 
-
-namespace Xamarin.Forms.GoogleMaps.Android
+namespace Xamarin.Forms.GoogleMaps.Clustering.Android
 {
     /* Note, we can't inherit Marker, like we done in iOS,
      * since we must inherit from Java.Lang.Object.
